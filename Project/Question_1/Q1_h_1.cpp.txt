@@ -1,0 +1,71 @@
+#include <iostream>
+#include <vector>
+#include <climits>
+#include <algorithm>
+
+using namespace std;
+vector<int> db1, db2;
+int queryA(int k)
+{
+    return db1[k - 1];
+}
+int queryB(int k)
+{
+    return db2[k - 1];
+}
+int findMedian(int n)
+{
+    int low = 0, high = n;
+
+    while (low <= high)
+    {
+        int i = (low + high) / 2;
+        int j = n - i;
+
+        int a_left = (i == 0) ? INT_MIN : queryA(i);
+        int a_right = (i == n) ? INT_MAX : queryA(i + 1);
+        int b_left = (j == 0) ? INT_MIN : queryB(j);
+        int b_right = (j == n) ? INT_MAX : queryB(j + 1);
+
+        if (a_left <= b_right && b_left <= a_right)
+            return max(a_left, b_left);
+        else if (a_left > b_right)
+            high = i - 1;
+        else
+            low = i + 1;
+    }
+    return -1;
+}
+
+int main()
+{
+    int n;
+    cout << "Enter n ";
+    cin >> n;
+
+    
+    if (n < 10) {
+        cout << "Size must be at least 10" << endl;
+        return 1;
+    }
+
+    db1.resize(n);
+    db2.resize(n);
+
+    cout << "Enter " << n << " values for Database 1: ";
+    for (int i = 0; i < n; i++)
+    {
+        cin >> db1[i];
+    }
+    cout << "Enter " << n << " values for Database 2: ";
+    for (int i = 0; i < n; i++)
+    {
+        cin >> db2[i];
+    }
+
+    sort(db1.begin(), db1.end());
+    sort(db2.begin(), db2.end());
+
+    cout << "Median: " << findMedian(n) << endl;
+    return 0;
+}

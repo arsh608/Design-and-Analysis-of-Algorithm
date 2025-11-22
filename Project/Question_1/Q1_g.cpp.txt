@@ -1,0 +1,74 @@
+#include <iostream>
+using namespace std;
+
+struct stock {
+    int buy;
+    int sell;
+    int gain;
+};
+
+stock solve(int arr[], int left, int right) {
+    if (left == right)
+        return {left, right, 0};
+
+    int mid = left + (right - left) / 2;
+
+    stock pt1 = solve(arr, left, mid);
+    stock pt2 = solve(arr, mid + 1, right);
+
+    int maxi = arr[mid + 1];
+    int maxi_day = mid + 1;
+    for (int i = mid + 2; i <= right; i++) {
+        if (arr[i] > maxi) {
+            maxi = arr[i];
+            maxi_day = i;
+        }
+    }
+
+    int mini = arr[left];
+    int mini_day = left;
+    for (int i = left + 1; i <= mid; i++) {
+        if (arr[i] < mini) {
+            mini = arr[i];
+            mini_day = i;
+        }
+    }
+
+    int total = maxi - mini;
+
+    if (total >= pt1.gain && total >= pt2.gain)
+        return {mini_day, maxi_day, total};
+    else if (pt1.gain >= pt2.gain)
+        return pt1;
+    else
+        return pt2;
+}
+
+int main() {
+    int n;
+    cout << "Enter size of array = ";
+    cin >> n;
+
+    if (n < 10) {
+        cout << "Size must be at least 10" << endl;
+        return 1;
+    }
+
+    int* arr = new int[n];
+    cout << "Enter " << n << " elements:" << endl;
+    for (int i = 0; i < n; i++) {
+        cin >> arr[i];
+    }
+
+    stock res = solve(arr, 0, n - 1);
+
+    if (res.gain <= 0)
+        cout << "No Gain possible" << endl;
+    else
+        cout << "Buy day = " << res.buy + 1 << ", Sell day = " << res.sell + 1
+             << ", Gain = " << res.gain << endl;
+
+    delete[] arr;
+
+    return 0;
+}

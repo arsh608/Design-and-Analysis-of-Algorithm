@@ -1,0 +1,95 @@
+#include <iostream>
+#include <vector>
+using namespace std;
+vector<int> account;
+int equivalent(int i, int j)
+{
+    return account[i] == account[j];
+}
+int equivalentcount(int l, int r, int idx)
+{
+    int cnt = 0;
+    for (int i = l; i <= r; i++)
+    {
+        if (equivalent(i, idx))
+        {
+            cnt++;
+        }
+    }
+    return cnt;
+}
+int findmajority(int l, int r)
+{
+    if (l == r)
+        return l;
+
+    int mid = (l + r) / 2;
+    int left = findmajority(l, mid);
+    int right = findmajority(mid + 1, r);
+
+    if (left == -1 && right == -1)
+        return -1;
+    if (left == -1)
+        return right;
+    if (right == -1)
+        return left;
+
+    if (equivalent(left, right))
+        return left;
+
+    int leftCount = equivalentcount(l, r, left);
+    int rightCount = equivalentcount(l, r, right);
+    int len = r - l + 1;
+
+    if (leftCount > len / 2)
+        return left;
+    if (rightCount > len / 2)
+        return right;
+    return -1;
+}
+int main()
+{
+    int n;
+    cout << "Enter number of cards: ";
+    cin >> n;
+
+    if (n < 10)
+    {
+        cout << "Size must be at least 10" << endl;
+        return 1;
+    }
+
+    account.resize(n);
+    cout << "Enter account IDs for each card: ";
+    for (int i = 0; i < n; i++)
+        cin >> account[i];
+
+    int candidate = findmajority(0, n - 1);
+
+    if (candidate == -1)
+    {
+        cout << "NO\n";
+        return 0;
+    }
+
+    int cnt = equivalentcount(0, n - 1, candidate);
+    if (cnt > n / 2)
+    {
+        cout << "YES " << cnt << "\n";
+        cout << "Equivalent card indices: ";
+        for (int i = 0; i < n; i++)
+        {
+            if (equivalent(i, candidate))
+            {
+                cout << i + 1 << ' ';
+            }
+        }
+        cout << '\n';
+    }
+    else
+    {
+        cout << "NO\n";
+    }
+
+    return 0;
+}

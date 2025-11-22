@@ -1,0 +1,53 @@
+// 1.
+#include <iostream>
+using namespace std;
+
+int multi = 0;
+
+long long power(long long a, int n) {       //need long long as dealing with exponential growth.
+    if (n == 0)
+        return 1;
+    if (n == 1)
+        return a;
+
+    long long half = power(a, n / 2);
+    multi++;
+
+    if (n % 2 == 0)                         // check if exponent is even or odd
+        return half * half;
+    else {
+        multi++; 
+        return a * half * half;
+    }
+}
+
+int main() {
+    long long a;
+    int n;
+
+    cout << "Enter base (a): ";
+    cin >> a;
+    cout << "Enter exponent (n > 0): ";
+    cin >> n;
+
+    long long res = power(a, n);
+    cout << "\nResult: " << a << "^" << n << " = " << res << endl;
+    cout << "Total multiplications: " << multi << endl;
+
+    cout << "Recurrence Relation =   T(n) = T(n/2) + 2 for odd n and T(n) = T(n/2) + 1 for even n." << endl;
+    cout << "Brute force takes (n - 1) multiplications (O(n)), while divide and conquer takes only O(log n), which is much faster for large n." ;
+    return 0;
+}
+
+
+
+// 2. Recurrence Relation:
+//    T(n) = T(n/2) + 2 for odd n and T(n) = T(n/2) + 1 for even n.
+//    Solving gives T(n) = O(log n) multiplications.
+
+
+
+// 3. Comparison with Brute Force:
+//    Brute force takes (n - 1) multiplications (O(n)), while divide and conquer
+//    takes only O(log n), which is much faster for large n.
+
